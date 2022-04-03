@@ -8,6 +8,8 @@ class LtHash:
 		self.digest = [None]*self.n
 
 	def eval(self, x: set[str]) -> None:
+		# Make sure the input is a set:
+		x = set(x)
 		q = pow(2,self.d)
 		h_sum = [0]*self.n
 		for xi in x:
@@ -17,23 +19,33 @@ class LtHash:
 			self.digest = h_sum
 
 	def add(self,lthash) -> None:
+		# Adding lthash to the self.digest, adding is done elementwise (just like vectors) and modulo q=2^d
 		assert lthash.n == self.n, "number of elements n has to be the same"
 		assert lthash.d == self.d, "modulus q=2^d has to be the same"
 		assert lthash.digest != [None]*lthash.n, "The added hash has not been evaluated"
+		# If self has not been evaluated yet we add the new hash to the all 0 vector
 		if self.digest == [None]*self.n:
 			self.digest = [0]*self.n
 		q = pow(2,self.d)
 		self.digest = [sum(x)%q for x in zip(self.digest, lthash.digest)]
 
 	def add_data(self,m) -> None:
+		# Adding hash of data m to self.digest, adding is done elementwise (just like vectors) and modulo q=2^d
+		# If self has not been evaluated yet we add the new hash to the all 0 vector
 		if self.digest == [None]*self.n:
 			self.digest = [0]*self.n
+		# Adding a single element set can be done also by just inputting the element itself
+		if isinstance(m,str)==True:
+			m = {m}
+		# Make sure the input is a set:
+		m = set(m)
 		q = pow(2,self.d)
 		lthash = LtHash(self.n,self.d)
 		lthash.eval(m)
 		self.digest = [sum(x)%q for x in zip(self.digest, lthash.digest)]
 
 	def rem(self,lthash) -> None:
+		# Subtract lthash from the self.digest, subtracting is done elementwise (just like vectors) and modulo q=2^d
 		assert lthash.n == self.n, "number of elements n has to be the same"
 		assert lthash.d == self.d, "modulus q=2^d has to be the same"
 		assert lthash.digest != [None]*lthash.n, "The subtracted hash has not been evaluated"
@@ -42,9 +54,23 @@ class LtHash:
 		digest_temp = [-x for x in lthash.digest]
 		self.digest = [sum(x)%q for x in zip(self.digest, digest_temp)]
 
+	def rem_data(self,m) -> None:
+		# Subtract hash of data m from the self.digest, subtracting is done elementwise (just like vectors) and modulo q=2^d
+		# Subtracting a single element set can be done also by just inputting the element itself
+		if isinstance(m,str)==True:
+			m = {m}
+		# Make sure the input is a set:
+		m = set(m)
+		q = pow(2,self.d)
+		lthash = LtHash(self.n,self.d)
+		lthash.eval(m)
+		digest_temp = [-x for x in lthash.digest]
+		self.digest = [sum(x)%q for x in zip(self.digest, digest_temp)]
+
 	def __h(self,xi) -> list[int]:
-		#input: byte string
-		#assert xi is a byte string
+		# Evaluating SHAKE128 on xi, output length is n*d bits, output is formatted as a list of ints (in Z_q^n)
+		# input: byte string
+		# output: list of n integers modulo q=2^d
 
 		lout = self.n * self.d
 		lout_hash = math.ceil(lout/8)
