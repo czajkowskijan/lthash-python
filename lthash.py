@@ -8,6 +8,10 @@ class LtHash:
 		self.digest = [None]*self.n
 
 	def eval(self, x: set[str]) -> None:
+		# Adding a single element set can be done also by just inputting the element itself
+		if isinstance(x,str)==True:
+			x = {x}
+		assert x != {}, "The input is the empty set!"
 		# Make sure the input is a set:
 		x = set(x)
 		q = pow(2,self.d)
@@ -16,7 +20,7 @@ class LtHash:
 			assert isinstance(xi, str), "Database has to consist of strings"
 			h_new = self.__h(bytes( xi  , 'utf-8'))
 			h_sum = [sum(x)%q for x in zip(h_sum, h_new)]
-			self.digest = h_sum
+		self.digest = h_sum
 
 	def add(self,lthash) -> None:
 		# Adding lthash to the self.digest, adding is done elementwise (just like vectors) and modulo q=2^d
