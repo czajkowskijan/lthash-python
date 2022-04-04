@@ -29,8 +29,7 @@ i = input("Press Enter to continue: ")
 # Does it yield what it should?
 m12 = {'Entry 1', 'Entry 2', 'Entry 3'}
 print('m1 u {m2} = ', m12)
-lthash12 = LtHash(n,d)
-lthash12.eval(m12)
+lthash12 = LtHash(n,d,m12)
 print('H(m1 u {m2}) = ', lthash12.digest)
 print('It is ',lthash1.digest==lthash12.digest,' that set homomorphism works: H(m1 u {m2}) = H(m1) + H(m2)!')
 
@@ -38,8 +37,7 @@ i = input("Press Enter to continue: ")
 
 # We can also remove elements:
 lthash1.rem_data(m2)
-lthash_test = LtHash(n,d)
-lthash_test.eval(m1)
+lthash_test = LtHash(n,d,m1)
 print('It is ',lthash1.digest==lthash_test.digest,' that H(m1 u m2) - H(m2) = H(m1)')
 
 i = input("Press Enter to continue: ")

@@ -2,10 +2,13 @@ from Crypto.Hash import SHAKE128
 import math
 
 class LtHash:
-	def __init__(self, n=1024, d=16):
+	def __init__(self, n=1024, d=16, x=None):
 		self.n = n
 		self.d = d
 		self.digest = [None]*self.n
+		if x != None:
+			self.eval(x)
+		
 
 	def eval(self, x: set[str]) -> None:
 		# Adding a single element set can be done also by just inputting the element itself
